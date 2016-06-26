@@ -1,12 +1,17 @@
 package twitchviewer.gui;
 
 import java.awt.EventQueue;
+import java.awt.Image;
 
+import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JToolBar;
 
 import java.awt.BorderLayout;
 
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -26,9 +31,15 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import java.awt.Font;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JTextPane;
+import javax.swing.plaf.basic.ComboPopup;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import javax.swing.text.StyledDocument;
@@ -36,6 +47,7 @@ import javax.swing.text.StyledDocument;
 import twitchviewer.assist.TwitchConnector;
 
 import javax.swing.JEditorPane;
+import javax.swing.JComboBox;
 
 public class MainWindow {
 
@@ -85,7 +97,7 @@ public class MainWindow {
 				exitDialog();
 			}
 		});
-		frame.setBounds(100, 100, 764, 471);
+		frame.setBounds(100, 100, 807, 555);
 		frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		
 		JMenuBar mainMenuBar = new JMenuBar();
@@ -122,30 +134,27 @@ public class MainWindow {
 		txtTwitchUsername.setText("baldher89");
 		txtTwitchUsername.setColumns(30);
 		
-		final JEditorPane debugEditorPane = new JEditorPane();
-		debugEditorPane.setEditable(false);
-		debugEditorPane.setBounds(1, 1, 437, 294);
-		frame.getContentPane().add(debugEditorPane);
-		
-		final JScrollPane debugPane = new JScrollPane(debugEditorPane);
-		debugPane.setBounds(12, 107, 440, 297);
-		frame.getContentPane().add(debugPane);
+		final JComboBox comboBoxChannels = new JComboBox();
+		comboBoxChannels.setBounds(22, 101, 728, 50);
+		frame.getContentPane().add(comboBoxChannels);
 		
 		JButton btnSearch = new JButton("Keresés");
+		final Map<Object,ImageIcon> icons = new HashMap<Object,ImageIcon>();
 		btnSearch.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				debugEditorPane.setText(txtTwitchUsername.getText());
-				Document doc = debugEditorPane.getDocument();
-				for(String url : TwitchConnector.getFollowedChannels(txtTwitchUsername.getText())) {
-					try {
-						doc.insertString(doc.getLength(), "\n" + url, null);
-					} catch (BadLocationException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+				for(Map<String,String> channel : TwitchConnector.getFollowedChannels(txtTwitchUsername.getText())) {
+					
+					
+					icons.put(channel.get("url"),icon);
+					comboBoxChannels.addItem(channel.get("url"));
 				}
+				
+				comboBoxChannels.setRenderer(new IconListRenderer(icons));
+				comboBoxChannels.revalidate();
+				comboBoxChannels.repaint();
 			}
 		});
+		
 		btnSearch.setBounds(609, 31, 117, 25);
 		panel.add(btnSearch);
 	}
