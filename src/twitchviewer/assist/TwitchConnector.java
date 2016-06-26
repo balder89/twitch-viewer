@@ -39,7 +39,9 @@ public class TwitchConnector {
 				JSONObject jo2 = jo.getJSONObject("channel");
 				Map<String,String> map = new HashMap<String,String>();
 				
-				map.put("logo",getImageIcon((jo2.get("logo").equals(null)) ? "" : jo2.getString("logo")));
+				Thumbnailer.getBufferedImageFromUrl((jo2.get("logo").equals(null)) ? "" : jo2.getString("logo"));
+				
+				map.put("logo","");
 				map.put("url",jo2.getString("url"));
 				channels.add(map);
 				
@@ -50,36 +52,11 @@ public class TwitchConnector {
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		
-		return channels;
-	}
-	
-	private static String getImageIcon(final String filePath) {
-		
-		try {
-			if(!filePath.equals("")) {
-				URL url = new URL(filePath);
-				BufferedImage originalImage = ImageIO.read(url);
-				BufferedImage resizedImage = resizeImage(originalImage, BufferedImage.TYPE_INT_ARGB, 50, 50);
-				
-				
-				ImageIO.write(resizedImage, formatName, output);
-			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		return icon;
-	}
-	
-	private static BufferedImage resizeImage(BufferedImage originalImage, int type, int IMG_WIDTH, int IMG_HEIGHT) {
-	    BufferedImage resizedImage = new BufferedImage(IMG_WIDTH, IMG_HEIGHT, type);
-	    Graphics2D g = resizedImage.createGraphics();
-	    g.drawImage(originalImage, 0, 0, IMG_WIDTH, IMG_HEIGHT, null);
-	    g.dispose();
-
-	    return resizedImage;
+		return channels;
 	}
 }

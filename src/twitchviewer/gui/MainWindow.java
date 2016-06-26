@@ -79,7 +79,7 @@ public class MainWindow {
 
 	private void exitDialog() {
 		final Object[] options = {"Igen", "Nem"};
-		final int exit = JOptionPane.showOptionDialog(frame, "Bizots, hogy ki akarsz lÃ©pni?", "KilÃ©pÃ©s", JOptionPane.YES_NO_CANCEL_OPTION, 
+		final int exit = JOptionPane.showOptionDialog(frame, "Bizots, hogy ki akarsz lépni?", "Kilépés", JOptionPane.YES_NO_CANCEL_OPTION, 
 				JOptionPane.QUESTION_MESSAGE, null, options, null);
 		
 		if(exit == JOptionPane.YES_OPTION) {
@@ -103,10 +103,10 @@ public class MainWindow {
 		JMenuBar mainMenuBar = new JMenuBar();
 		frame.setJMenuBar(mainMenuBar);
 		
-		JMenu menuMainMenu = new JMenu("FÅ‘menÃ¼");
+		JMenu menuMainMenu = new JMenu("Fõmenü");
 		mainMenuBar.add(menuMainMenu);
 		
-		JMenuItem mainMenuItemExit = new JMenuItem("KilÃ©pÃ©s");
+		JMenuItem mainMenuItemExit = new JMenuItem("Kilépés");
 		mainMenuItemExit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				exitDialog();
@@ -114,10 +114,10 @@ public class MainWindow {
 		});
 		menuMainMenu.add(mainMenuItemExit);
 		
-		JMenu menuHelpMenu = new JMenu("SÃºgÃ³");
+		JMenu menuHelpMenu = new JMenu("Súgó");
 		mainMenuBar.add(menuHelpMenu);
 		
-		JMenuItem helpMenuItemAbout = new JMenuItem("NÃ©vjegy");
+		JMenuItem helpMenuItemAbout = new JMenuItem("Névjegy");
 		menuHelpMenu.add(helpMenuItemAbout);
 		frame.getContentPane().setLayout(null);
 		
@@ -138,14 +138,14 @@ public class MainWindow {
 		comboBoxChannels.setBounds(22, 101, 728, 50);
 		frame.getContentPane().add(comboBoxChannels);
 		
-		JButton btnSearch = new JButton("KeresÃ©s");
+		JButton btnSearch = new JButton("Keresés");
 		final Map<Object,ImageIcon> icons = new HashMap<Object,ImageIcon>();
 		btnSearch.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				for(Map<String,String> channel : TwitchConnector.getFollowedChannels(txtTwitchUsername.getText())) {
 					
 					
-					icons.put(channel.get("url"),icon);
+					//icons.put(channel.get("url"),icon);
 					comboBoxChannels.addItem(channel.get("url"));
 				}
 				
