@@ -24,6 +24,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
 
 import javax.swing.JSplitPane;
 import javax.swing.JTextField;
@@ -31,6 +32,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import java.awt.Font;
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -44,6 +46,7 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import javax.swing.text.StyledDocument;
 
+import twitchviewer.assist.Thumbnailer;
 import twitchviewer.assist.TwitchConnector;
 
 import javax.swing.JEditorPane;
@@ -79,7 +82,7 @@ public class MainWindow {
 
 	private void exitDialog() {
 		final Object[] options = {"Igen", "Nem"};
-		final int exit = JOptionPane.showOptionDialog(frame, "Bizots, hogy ki akarsz lépni?", "Kilépés", JOptionPane.YES_NO_CANCEL_OPTION, 
+		final int exit = JOptionPane.showOptionDialog(frame, "Bizots, hogy ki akarsz lÃ©pni?", "KilÃ©pÃ©s", JOptionPane.YES_NO_CANCEL_OPTION, 
 				JOptionPane.QUESTION_MESSAGE, null, options, null);
 		
 		if(exit == JOptionPane.YES_OPTION) {
@@ -103,10 +106,10 @@ public class MainWindow {
 		JMenuBar mainMenuBar = new JMenuBar();
 		frame.setJMenuBar(mainMenuBar);
 		
-		JMenu menuMainMenu = new JMenu("Fõmenü");
+		JMenu menuMainMenu = new JMenu("FÅ‘menÃ¼");
 		mainMenuBar.add(menuMainMenu);
 		
-		JMenuItem mainMenuItemExit = new JMenuItem("Kilépés");
+		JMenuItem mainMenuItemExit = new JMenuItem("KilÃ©pÃ©s");
 		mainMenuItemExit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				exitDialog();
@@ -114,10 +117,10 @@ public class MainWindow {
 		});
 		menuMainMenu.add(mainMenuItemExit);
 		
-		JMenu menuHelpMenu = new JMenu("Súgó");
+		JMenu menuHelpMenu = new JMenu("SÃºgÃ³");
 		mainMenuBar.add(menuHelpMenu);
 		
-		JMenuItem helpMenuItemAbout = new JMenuItem("Névjegy");
+		JMenuItem helpMenuItemAbout = new JMenuItem("NÃ©vjegy");
 		menuHelpMenu.add(helpMenuItemAbout);
 		frame.getContentPane().setLayout(null);
 		
@@ -138,15 +141,21 @@ public class MainWindow {
 		comboBoxChannels.setBounds(22, 101, 728, 50);
 		frame.getContentPane().add(comboBoxChannels);
 		
-		JButton btnSearch = new JButton("Keresés");
-		final Map<Object,ImageIcon> icons = new HashMap<Object,ImageIcon>();
+		JButton btnSearch = new JButton("KeresÃ©s");
+		final Map<Object,String> icons = new HashMap<Object,String>();
 		btnSearch.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				for(Map<String,String> channel : TwitchConnector.getFollowedChannels(txtTwitchUsername.getText())) {
 					
-					
-					//icons.put(channel.get("url"),icon);
-					comboBoxChannels.addItem(channel.get("url"));
+					try {
+						final File image = Thumbnailer.getFileFromUrl(channel.get("logo"));
+						icons.put(channel.get("url"),Thumbnailer.resizeImage(image, 50, 50, BufferedImage.TYPE_3BYTE_BGR));
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} finally {
+						comboBoxChannels.addItem(channel.get("url"));
+					}
 				}
 				
 				comboBoxChannels.setRenderer(new IconListRenderer(icons));

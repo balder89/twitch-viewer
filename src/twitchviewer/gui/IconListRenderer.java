@@ -17,9 +17,9 @@ public class IconListRenderer extends DefaultListCellRenderer {
 	 * 
 	 */
 	private static final long serialVersionUID = -1740077435738933533L;
-	private Map<Object, ImageIcon> icons = null;
+	private Map<Object, String> icons = null;
 	
-	public IconListRenderer(final Map<Object, ImageIcon> icons) {
+	public IconListRenderer(final Map<Object, String> icons) {
 		this.icons = icons;
 	}
 	
@@ -30,11 +30,8 @@ public class IconListRenderer extends DefaultListCellRenderer {
 				isSelected, cellHasFocus);
 		
 		if(icons.get(value) != null) {
-			final Image img = icons.get(value).getImage();
-			
-			final ImageIcon icon = new ImageIcon(img.getScaledInstance(50, 50, Image.SCALE_DEFAULT));
-			
-			label.setIcon(icon);
+			final ImageIcon image = new ImageIcon(icons.get(value));
+			label.setIcon(image);
 		}
 		
 		label.setBounds(label.getX(), label.getY(), 50, 50);

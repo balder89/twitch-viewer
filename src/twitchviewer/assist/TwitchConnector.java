@@ -2,6 +2,7 @@ package twitchviewer.assist;
 
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -39,9 +40,7 @@ public class TwitchConnector {
 				JSONObject jo2 = jo.getJSONObject("channel");
 				Map<String,String> map = new HashMap<String,String>();
 				
-				Thumbnailer.getBufferedImageFromUrl((jo2.get("logo").equals(null)) ? "" : jo2.getString("logo"));
-				
-				map.put("logo","");
+				map.put("logo",(jo2.get("logo").equals(null)) ? "" : jo2.getString("logo"));
 				map.put("url",jo2.getString("url"));
 				channels.add(map);
 				
@@ -50,9 +49,6 @@ public class TwitchConnector {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

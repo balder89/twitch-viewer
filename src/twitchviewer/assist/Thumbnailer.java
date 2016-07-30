@@ -19,12 +19,13 @@ public class Thumbnailer {
 	private final static String THUMBNAIL_DIR = "./data/thumbnails";
 	private final static String IMAGE_DIR = "./data/images";
 	
-	public static BufferedImage getBufferedImageFromUrl(final String imageUrl) throws IOException {
+	public static File getFileFromUrl(final String imageUrl) throws IOException {
+		File output = null;
+		
 		if(!("").equals(imageUrl)) {
 			final URL url = new URL(imageUrl);
 			String newFileName = imageUrl.replaceAll("\\.", "_");
 			newFileName = newFileName.substring(newFileName.lastIndexOf("/") + 1, newFileName.length());
-			System.out.println(newFileName);
 			
 			final InputStream inputStream = url.openStream();
 			final ImageInputStream input = ImageIO.createImageInputStream(inputStream);
@@ -38,22 +39,35 @@ public class Thumbnailer {
 				BufferedImage image = reader.read(0);
 				
 				String format = reader.getFormatName();
-				File file = new File(IMAGE_DIR + "/" + newFileName + "." + format.toLowerCase());
-				ImageIO.write(image, format, file);
+				output = new File(IMAGE_DIR + "/" + newFileName + "." + format.toLowerCase());
+				ImageIO.write(image, format, output);
 			}
 			
 			input.close();
+			
+			return output;
 		}
 		
 		return null;
 	}
 	
-	public static ImageIcon resizeImageIcon(final BufferedImage originalImage, final int width, final int height, final int type) {
-		BufferedImage resizedImage = new BufferedImage(width, height, type);
-	    Graphics2D g = resizedImage.createGraphics();
-	    g.drawImage(originalImage, 0, 0, width, height, null);
-	    g.dispose();
-
-	    return new ImageIcon(resizedImage);
+	public static String resizeImage(final File input, final int width, final int height, final int type) throws IOException {
+		if(input != null) {
+			final String format = input.getName().substring(input.getName().lastIndexOf(".") + 1);
+		    final String newFileName = input.getName().substring(0,input.getName().lastIndexOf(".")) + "_" + width + "_" + height;
+			final File output = new File(THUMBNAIL_DIR + "/" + newFileName + "." + format.toLowerCase());
+		    
+			final BufferedImage originalImage = ImageIO.read(input);
+			final BufferedImage resizedImage = new BufferedImage(width, height, type);
+		    final Graphics2D g = resizedImage.createGraphics();
+		    g.drawImage(originalImage, 0, 0, width, height, null);
+		    g.dispose();
+		    
+		    ImageIO.write(resizedImage, format, output);
+	
+		    return output.getAbsolutePath();
+		}
+		
+		return null;
 	}
 }
